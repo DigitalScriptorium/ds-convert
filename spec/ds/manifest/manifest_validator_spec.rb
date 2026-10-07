@@ -9,9 +9,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
   context "METS XML" do
     let(:mets_dir) { fixture_path 'ds_mets_xml' }
     let(:manifest_path) { File.join mets_dir, 'manifest.csv' }
-    # let(:csv_data) {
-    #   CSV.parse File.open(manifest_path, 'r').read, headers: true
-    # }
     let(:manifest) { DS::Manifest::Manifest.new manifest_path, mets_dir }
     let(:validator) { DS::Manifest::ManifestValidator.new manifest }
     let(:subject) { validator }
@@ -32,9 +29,12 @@ RSpec.describe DS::Manifest::ManifestValidator do
   context "MARC XML" do
     let(:marc_xml_dir) { fixture_path 'marc_xml' }
     let(:manifest_csv) { 'manifest.csv' }
-    let(:manifest_path) { File.join marc_xml_dir, manifest_csv }
-    let(:csv_data) {
-      CSV.parse File.open(manifest_path, 'r').read, headers: true
+    let(:manifest_path) { temp_csv csv_data }
+    let(:csv_data) {<<~EOF
+      holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+      Q49117,marc_xml_with_all_values.xml,University of Pennsylvania,marc-xml,DS10000,9951865503503681,9951865503503681,//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']],20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://example.com,https://example-2.com,TRUE,2023-07-25T09:52:02-0400
+      Q49117,9949533433503681_marc.xml,University of Pennsylvania,marc-xml,,9949533433503681,9949533433503681,//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']],20220803105856,Oversize LJS 280,Decretales a[b]breviate,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3wm13v03/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9949533433503681,FALSE,2023-08-01T11:31:22-0400
+    EOF
     }
     let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
 
@@ -58,7 +58,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest_path) { temp_csv csv_data }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -75,7 +74,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,University of Pennsylvania,marc-xml,,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest_path) { temp_csv csv_data }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -92,7 +90,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest_path) { temp_csv csv_data }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -119,7 +116,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           ,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest_path) { temp_csv csv_data }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -134,7 +130,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest_path) { temp_csv csv_data }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -149,7 +144,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,,20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest_path) { temp_csv csv_data }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -197,7 +191,7 @@ RSpec.describe DS::Manifest::ManifestValidator do
 
       context "for valid QIDs" do
         it 'is truthy' do
-          expect(validator.validate_qids csv_data.first, 0).to be_truthy
+          expect(validator.validate_qids manifest.first, 0).to be_truthy
         end
       end
 
@@ -251,7 +245,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           BAD SOURCE TYPE,other_value
         EOF
         }
-        let(:manifest_path) { temp_csv csv_data }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
 
         it 'is falsey' do
@@ -296,7 +289,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
         EOF
         }
 
-        let(:manifest_path) { temp_csv csv_data }
 
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
@@ -330,10 +322,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
         EOF
         }
 
-        let(:manifest_path) {
-          temp_csv csv_data
-        }
-
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -348,10 +336,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source
           multiple_marc_records_duplicate_ids.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]"
         EOF
-        }
-
-        let(:manifest_path) {
-          temp_csv csv_data
         }
 
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
@@ -371,10 +355,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           EOF
           }
 
-          let(:manifest_path) {
-            temp_csv csv_data
-          }
-
           let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
           it 'is truthy' do
@@ -388,10 +368,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
             Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
             Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
           EOF
-          }
-
-          let(:manifest_path) {
-            temp_csv csv_data
           }
 
           let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
@@ -417,9 +393,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           EOF
           }
           let(:marc_xml_dir) { fixture_path 'marc_xml' }
-          let(:manifest_path) {
-            temp_csv csv_data
-          }
           let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -435,9 +408,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           EOF
           }
           let(:marc_xml_dir) { fixture_path 'marc_xml' }
-          let(:manifest_path) {
-            temp_csv csv_data
-          }
           let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
