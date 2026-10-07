@@ -112,6 +112,20 @@ RSpec.describe DS::Manifest::ManifestValidator do
         end
       end
 
+      context 'with holding_institution_institutional_id missing' do
+        let(:csv_data) {
+          <<~CSV
+            holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+            Q49117,marc_xml_with_all_values.xml,University of Pennsylvania,marc-xml,DS10000,,9951865503503681,//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']],20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://example.com,https://example-2.com,TRUE,2023-07-25T09:52:02-0400
+          CSV
+        }
+
+        it 'is truthy' do
+          expect(validator.validate_required_values).to be_truthy
+        end
+
+      end
+
       context 'with record_lookup_value blank' do
         let(:csv_data) {
           <<~CSV
