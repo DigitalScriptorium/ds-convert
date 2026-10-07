@@ -28,13 +28,13 @@ RSpec.describe DS::Manifest::ManifestValidator do
   end
   context "MARC XML" do
     let(:marc_xml_dir) { fixture_path 'marc_xml' }
-    let(:manifest_csv) { 'manifest.csv' }
     let(:manifest_path) { temp_csv csv_data }
-    let(:csv_data) {<<~EOF
-      holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-      Q49117,marc_xml_with_all_values.xml,University of Pennsylvania,marc-xml,DS10000,9951865503503681,9951865503503681,//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']],20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://example.com,https://example-2.com,TRUE,2023-07-25T09:52:02-0400
-      Q49117,9949533433503681_marc.xml,University of Pennsylvania,marc-xml,,9949533433503681,9949533433503681,//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']],20220803105856,Oversize LJS 280,Decretales a[b]breviate,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3wm13v03/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9949533433503681,FALSE,2023-08-01T11:31:22-0400
-    EOF
+    let(:csv_data) {
+      <<~CSV
+        holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+        Q49117,marc_xml_with_all_values.xml,University of Pennsylvania,marc-xml,DS10000,9951865503503681,9951865503503681,//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']],20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://example.com,https://example-2.com,TRUE,2023-07-25T09:52:02-0400
+        Q49117,9949533433503681_marc.xml,University of Pennsylvania,marc-xml,,9949533433503681,9949533433503681,//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']],20220803105856,Oversize LJS 280,Decretales a[b]breviate,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3wm13v03/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9949533433503681,FALSE,2023-08-01T11:31:22-0400
+      CSV
     }
     let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
 
@@ -52,11 +52,12 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'with missing columns' do
-        let(:csv_data) { <<~EOF
-          holding_institution_ds_qid,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-          Q49117,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-          Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            holding_institution_ds_qid,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+            Q49117,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+            Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
+          CSV
         }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -67,11 +68,12 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'with missing record_lookup_value column' do
-        let(:csv_data) { <<~EOF
-          holding_institution_ds_qid,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-          Q49117,University of Pennsylvania,marc-xml,,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-          Q49117,University of Pennsylvania,marc-xml,,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            holding_institution_ds_qid,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+            Q49117,University of Pennsylvania,marc-xml,,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+            Q49117,University of Pennsylvania,marc-xml,,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
+          CSV
         }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -82,11 +84,12 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'with missing lookup_value_location_in_source column' do
-        let(:csv_data) { <<~EOF
-          holding_institution_ds_qid,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-          Q49117,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-          Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            holding_institution_ds_qid,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+            Q49117,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+            Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
+          CSV
         }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -108,10 +111,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'with missing values' do
-        let(:csv_data) { <<~EOF
-          holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-          ,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+            ,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+          CSV
         }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -121,10 +125,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'with record_lookup_value blank' do
-        let(:csv_data) { <<~EOF
-          holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-          Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+            Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+          CSV
         }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -134,10 +139,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'with lookup_value_location_in_source blank' do
-        let(:csv_data) { <<~EOF
-          holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-          Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,,20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+            Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,,20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+          CSV
         }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
@@ -157,10 +163,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context "for an invalid url" do
-        let(:csv_data) { parse_csv <<~EOF
-          iiif_manifest_url,link_to_institutional_record
-          httpx://bad-example.com,
-        EOF
+        let(:csv_data) {
+          parse_csv <<~CSV
+            iiif_manifest_url,link_to_institutional_record
+            httpx://bad-example.com,
+          CSV
         }
 
         it 'is falsey' do
@@ -169,10 +176,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context "for an empty URL" do
-        let(:csv_data) { parse_csv <<~EOF
-          iiif_manifest_url,link_to_institutional_record
-          ,
-        EOF
+        let(:csv_data) {
+          parse_csv <<~CSV
+            iiif_manifest_url,link_to_institutional_record
+            ,
+          CSV
         }
 
         it 'is truthy' do
@@ -190,11 +198,12 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context "for invalid QIDs" do
-        let(:csv_data) { parse_csv <<~EOF
-          holding_institution_ds_qid,other_column
-          Qxxx9,val
-          ,val
-        EOF
+        let(:csv_data) {
+          parse_csv <<~CSV
+            holding_institution_ds_qid,other_column
+            Qxxx9,val
+            ,val
+          CSV
         }
 
         it 'is falsey for invalid QIDs' do
@@ -213,10 +222,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context "for invalid dates" do
-        let(:csv_data) { parse_csv <<~EOF
-          record_last_updated,manifest_generated_at
-          2023-12-12T05:05:05,2023-31-31T05:05:05
-        EOF
+        let(:csv_data) {
+          parse_csv <<~CSV
+            record_last_updated,manifest_generated_at
+            2023-12-12T05:05:05,2023-31-31T05:05:05
+          CSV
         }
 
         it 'is falsey ' do
@@ -234,10 +244,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'for unknown source types' do
-        let(:csv_data) { parse_csv <<~EOF
-          source_data_type,other_column
-          BAD SOURCE TYPE,other_value
-        EOF
+        let(:csv_data) {
+          parse_csv <<~CSV
+            source_data_type,other_column
+            BAD SOURCE TYPE,other_value
+          CSV
         }
 
         it 'is falsey' do
@@ -276,10 +287,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'for files that don\'t exist' do
-        let(:csv_data) { <<~EOF
-          filename,other_column
-          not_a_file.xml,val
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            filename,other_column
+            not_a_file.xml,val
+          CSV
         }
 
 
@@ -308,10 +320,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
 
       context 'for a CSV with bad lookups' do
-        let(:csv_data) { <<~EOF
-          filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source
-          9951865503503681_marc.xml,marc-xml,XXXXXXXXX,XXXXXXXXX,"//marc:record[./marc:controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]"
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source
+            9951865503503681_marc.xml,marc-xml,XXXXXXXXX,XXXXXXXXX,"//marc:record[./marc:controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]"
+          CSV
         }
 
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
@@ -323,10 +336,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
 
       context 'for a CSV with an ambiguous location in source' do
 
-        let(:csv_data) { <<~EOF
-          filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source
-          multiple_marc_records_duplicate_ids.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]"
-        EOF
+        let(:csv_data) {
+          <<~CSV
+            filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source
+            multiple_marc_records_duplicate_ids.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]"
+          CSV
         }
 
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
@@ -338,11 +352,12 @@ RSpec.describe DS::Manifest::ManifestValidator do
 
       context '#validate_records_unique' do
         context 'records are unique' do
-          let(:csv_data) { <<~EOF
-            holding_institution_ds_qid,filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,call_number,link_to_institutional_record
-            Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
-            Q49117,multiple_marc_records.xml,marc-xml,9951865513503681,9951865513503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
-          EOF
+          let(:csv_data) {
+            <<~CSV
+              holding_institution_ds_qid,filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,call_number,link_to_institutional_record
+              Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
+              Q49117,multiple_marc_records.xml,marc-xml,9951865513503681,9951865513503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
+            CSV
           }
 
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
@@ -352,11 +367,12 @@ RSpec.describe DS::Manifest::ManifestValidator do
         end
 
         context 'records are not unique' do
-          let(:csv_data) { <<~EOF
-            holding_institution_ds_qid,filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,call_number,link_to_institutional_record
-            Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
-            Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
-          EOF
+          let(:csv_data) {
+            <<~CSV
+              holding_institution_ds_qid,filename,source_data_type,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,call_number,link_to_institutional_record
+              Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
+              Q49117,multiple_marc_records.xml,marc-xml,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",LJS 101,https://find.library.upenn.edu/catalog/9951865503503681?hld_id=22335156650003681
+            CSV
           }
 
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
@@ -375,10 +391,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
       end
       context 'validate errors with records present for MARC XML' do
         context 'for no record' do
-          let(:csv_data) { <<~EOF
-            holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-            Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,NO_ID,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-          EOF
+          let(:csv_data) {
+            <<~CSV
+              holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+              Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,NO_ID,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+            CSV
           }
           let(:marc_xml_dir) { fixture_path 'marc_xml' }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
@@ -389,10 +406,11 @@ RSpec.describe DS::Manifest::ManifestValidator do
         end
 
         context 'for more than one record' do
-          let(:csv_data) { <<~EOF
-            holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
-            Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681|9951745503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
-          EOF
+          let(:csv_data) {
+            <<~CSV
+              holding_institution_ds_qid,filename,holding_institution_wikidata_label,source_data_type,ds_id,holding_institution_institutional_id,record_lookup_value,lookup_value_location_in_source,record_last_updated,call_number,title,iiif_manifest_url,link_to_institutional_record,dated,manifest_generated_at
+              Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681|9951745503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
+            CSV
           }
           let(:marc_xml_dir) { fixture_path 'marc_xml' }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
@@ -408,7 +426,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
 
   context 'DS CSV' do
     let(:source_dir) { fixture_path 'ds_csv' }
-    let(:source_file) { File.join source_dir, 'ucriverside-dscsv.csv' }
     let(:manifest_path) { File.join source_dir, 'ucriverside-manifest.csv' }
     let(:manifest) { DS::Manifest::Manifest.new manifest_path, source_dir }
     let(:validator) { DS::Manifest::ManifestValidator.new manifest }
