@@ -58,7 +58,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -74,7 +73,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,University of Pennsylvania,marc-xml,,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -90,7 +88,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -116,7 +113,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           ,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -130,7 +126,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -144,7 +139,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           Q49117,9951865503503681_marc.xml,University of Pennsylvania,marc-xml,,9951865503503681,9951865503503681,,20220803105830,LJS 101,Periermenias Aristotelis ... [etc.],https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3rd1b/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9951865503503681,TRUE,2023-07-25T09:52:02-0400
         EOF
         }
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -245,7 +239,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           BAD SOURCE TYPE,other_value
         EOF
         }
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
 
         it 'is falsey' do
           expect(validator.validate_source_type manifest.first, 0).to be_falsey
@@ -290,7 +283,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
         }
 
 
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -322,7 +314,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
         EOF
         }
 
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -338,7 +329,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
         EOF
         }
 
-        let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'returns falsey' do
@@ -355,7 +345,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           EOF
           }
 
-          let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
           it 'is truthy' do
             expect(validator.validate_records_unique).to be_truthy
@@ -370,7 +359,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           EOF
           }
 
-          let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
           it 'is falsey' do
             expect(validator.validate_records_unique).to be_falsey
@@ -393,7 +381,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           EOF
           }
           let(:marc_xml_dir) { fixture_path 'marc_xml' }
-          let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
           it 'is falsey' do
@@ -408,7 +395,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           EOF
           }
           let(:marc_xml_dir) { fixture_path 'marc_xml' }
-          let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
           let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
           it 'is falsey' do
