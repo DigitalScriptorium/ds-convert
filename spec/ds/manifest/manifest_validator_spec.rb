@@ -10,7 +10,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
     let(:manifest_path) { File.join mets_dir, 'manifest.csv' }
     let(:manifest) { DS::Manifest::Manifest.new manifest_path, mets_dir }
     let(:validator) { DS::Manifest::ManifestValidator.new manifest }
-    let(:subject) { validator }
 
     it_behaves_like 'a manifest validator'
   end
@@ -20,7 +19,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
     let(:manifest_path) { File.join tei_xml_dir, 'manifest.csv' }
     let(:manifest) { DS::Manifest::Manifest.new manifest_path, tei_xml_dir }
     let(:validator) { DS::Manifest::ManifestValidator.new manifest }
-    let(:subject) { validator }
 
     it_behaves_like 'a manifest validator'
   end
