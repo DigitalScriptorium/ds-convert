@@ -5,7 +5,6 @@ require 'csv'
 
 RSpec.describe DS::Manifest::ManifestValidator do
 
-
   context "METS XML" do
     let(:mets_dir) { fixture_path 'ds_mets_xml' }
     let(:manifest_path) { File.join mets_dir, 'manifest.csv' }
@@ -24,8 +23,8 @@ RSpec.describe DS::Manifest::ManifestValidator do
     let(:subject) { validator }
 
     it_behaves_like 'a manifest validator'
-
   end
+
   context "MARC XML" do
     let(:marc_xml_dir) { fixture_path 'marc_xml' }
     let(:manifest_path) { temp_csv csv_data }
@@ -37,12 +36,9 @@ RSpec.describe DS::Manifest::ManifestValidator do
       CSV
     }
     let(:manifest) { DS::Manifest::Manifest.new manifest_path, marc_xml_dir }
-
     let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
     it_behaves_like 'a manifest validator'
-
-
 
     context 'validate_columns' do
       context 'with valid columns' do
@@ -59,7 +55,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
             Q49117,University of Pennsylvania,marc-xml,,9957602663503681,9957602663503681,"//record[./controlfield[@tag='001' and ./text() = 'ID_PLACEHOLDER']]",20220803105833,LJS 108,Manuscript leaf from Interpretationes Hebraicorum nominum,https://colenda.library.upenn.edu/phalt/iiif/2/81431-p3gw56/manifest,https://franklin.library.upenn.edu/catalog/FRANKLIN_9957602663503681,FALSE,2023-07-25T09:52:02-0400
           CSV
         }
-        # let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
           # RSpec::Mocks.space.proxy_for($/).reset
@@ -96,8 +91,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           expect(validator.validate_columns).to be_falsey
         end
       end
-
-
     end
 
     context 'validate_required_values' do
@@ -149,12 +142,10 @@ RSpec.describe DS::Manifest::ManifestValidator do
     end
 
     context 'validate_urls' do
-
       context "for a valid url" do
         it 'is truthy' do
           expect(validator.validate_urls manifest.first, 0).to be_truthy
         end
-
       end
 
       context "for an invalid url" do
@@ -185,7 +176,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
     end
 
     context 'validate_qids' do
-
       context "for valid QIDs" do
         it 'is truthy' do
           expect(validator.validate_qids manifest.first, 0).to be_truthy
@@ -205,11 +195,9 @@ RSpec.describe DS::Manifest::ManifestValidator do
           expect(validator.validate_qids manifest.first, 0).to be_falsey
         end
       end
-
     end
 
     context 'validate_dates' do
-
       context "for valid Dates" do
         it 'is truthy' do
           expect(validator.validate_dates manifest.first, 0).to be_truthy
@@ -228,7 +216,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           expect(validator.validate_dates manifest.first, 0).to be_falsey
         end
       end
-
     end
 
     context 'validate_source_type' do
@@ -250,7 +237,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
           expect(validator.validate_source_type manifest.first, 0).to be_falsey
         end
       end
-
     end
 
     context 'validate_data_types' do
@@ -288,8 +274,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
             not_a_file.xml,val
           CSV
         }
-
-
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
 
         it 'is falsey' do
@@ -376,8 +360,8 @@ RSpec.describe DS::Manifest::ManifestValidator do
           end
         end
       end
-
     end
+
     context 'validate_records present for MARC XML' do
       context 'for one record' do
         it 'is truthy' do
@@ -517,7 +501,6 @@ RSpec.describe DS::Manifest::ManifestValidator do
         let(:manifest_path) { File.join source_dir, 'ucriverside-manifest-invalid-id.csv' }
         let(:manifest) { DS::Manifest::Manifest.new manifest_path, source_dir }
         let(:validator) { DS::Manifest::ManifestValidator.new manifest }
-
         let(:expected_error) {
           [/ERROR: No records found for id: .* \(location: \w+\)/]
         }
@@ -528,6 +511,5 @@ RSpec.describe DS::Manifest::ManifestValidator do
         end
       end
     end
-
   end
 end
