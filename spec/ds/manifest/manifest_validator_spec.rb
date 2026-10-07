@@ -152,7 +152,7 @@ RSpec.describe DS::Manifest::ManifestValidator do
 
       context "for a valid url" do
         it 'is truthy' do
-          expect(validator.validate_urls csv_data.first, 0).to be_truthy
+          expect(validator.validate_urls manifest.first, 0).to be_truthy
         end
 
       end
@@ -166,7 +166,7 @@ RSpec.describe DS::Manifest::ManifestValidator do
         }
 
         it 'is falsey' do
-          expect(validator.validate_urls csv_data.first, 0).to be_falsey
+          expect(validator.validate_urls manifest.first, 0).to be_falsey
         end
       end
 
@@ -179,7 +179,7 @@ RSpec.describe DS::Manifest::ManifestValidator do
         }
 
         it 'is truthy' do
-          expect(validator.validate_urls csv_data.first, 0).to be_truthy
+          expect(validator.validate_urls manifest.first, 0).to be_truthy
         end
       end
     end
@@ -202,7 +202,7 @@ RSpec.describe DS::Manifest::ManifestValidator do
         }
 
         it 'is falsey for invalid QIDs' do
-          expect(validator.validate_qids csv_data.first, 0).to be_falsey
+          expect(validator.validate_qids manifest.first, 0).to be_falsey
         end
       end
 
@@ -212,7 +212,7 @@ RSpec.describe DS::Manifest::ManifestValidator do
 
       context "for valid Dates" do
         it 'is truthy' do
-          expect(validator.validate_dates csv_data.first, 0).to be_truthy
+          expect(validator.validate_dates manifest.first, 0).to be_truthy
         end
       end
 
@@ -225,7 +225,7 @@ RSpec.describe DS::Manifest::ManifestValidator do
         }
 
         it 'is falsey ' do
-          expect(validator.validate_dates csv_data.first, 0).to be_falsey
+          expect(validator.validate_dates manifest.first, 0).to be_falsey
         end
       end
 
